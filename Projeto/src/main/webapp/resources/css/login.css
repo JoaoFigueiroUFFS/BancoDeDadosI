@@ -1,0 +1,65 @@
+@charset "UTF-8";
+
+#body {
+  	margin: auto;
+} 
+
+#div {
+	margin: 0;
+}
+
+#container {
+	margin: 0;
+	width: 100vw;
+	height: 100vh;
+	background: #FFFFFF;
+	display: flex;
+	flex-direction: column;
+	justify-content: center;
+	align-items: center;
+}
+#content { 
+	margin: 0;
+	background: #FFFFFF;
+	width: 700px;
+	height: 500px;
+	display: flex;
+	flex-direction: column;
+	justify-content: flex-end;
+	align-items: center;
+}
+#footer {
+  	margin: 0;
+}
+
+#form {
+	margin-bottom: 20px;
+	width: 600px;
+	height: 200px;
+	background: #FFFFFF;
+	align-items: center;
+	justify-content: flex-end;
+	display: flex;
+	flex-direction: column;
+}
+
+#logo { 
+	margin-bottom: 50px;
+	height: 180px;
+	width: 180px;
+}
+
+#usuario {
+	height: 80px;
+	width: 150px;
+}
+
+#senha { 
+	height: 80px;
+	width: 150px;
+} 
+#login_button {
+  	height: 40px;
+	width: 70px;
+	color: #38B6FF;	
+}

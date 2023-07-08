@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:h="http://java.sun.com/jsf/html"
+	template="/WEB-INF/templates/login_template.xhtml"
+	xmlns:a="http://xmlns.jcp.org/jsf/passthrough">
+
+	<ui:define name="content">
+
+		<img id="logo" src="resources/images/jotatech_logo.png" />
+
+		<h:form id="form">
+			<h:panelGrid columns="2">
+				<h:outputLabel id="usuario" for="usuario" />
+				<h:inputText value="#{loginController.usuario.usuario}"
+					a:placeholder="username" size="50"
+					style="height: 35px; border: 0; border-bottom: 2px solid #38B6FF;" />
+
+				<h:outputLabel for="senha" />
+				<h:inputText id="senha" size="50"
+					value="#{loginController.usuario.senha}" a:placeholder="password"
+					style="height: 35px; border: 0; border-bottom: 2px solid #38B6FF;" />
+			</h:panelGrid>
+			<a href="cadastro_usuario.xhtml"
+				style="margin-left: 270px; margin-top: 5px; text-decoration:none; color: #000000;" > Cadastre-se </a>
+
+			<p>
+				<h:panelGrid columns="2">
+					<h:commandButton value="Login" action="#{loginController.login}"
+						style="height: 40px; width: 70px; border: 2px solid #38B6FF; border-radius: 10px; background-color: #FFFFFF;" />
+					<h:messages styleClass="messages" errorClass="invalid"
+						infoClass="valid" warnClass="warning" globalOnly="true" />
+				</h:panelGrid>
+			</p>
+		</h:form>
+
+	</ui:define>
+</ui:composition>
