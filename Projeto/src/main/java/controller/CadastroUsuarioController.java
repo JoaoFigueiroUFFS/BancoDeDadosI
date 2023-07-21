@@ -62,11 +62,11 @@ public class CadastroUsuarioController implements Serializable {
     @PostConstruct
     public void init() {
     	//Verifica se usuário está autenticado e possui a permissão adequada
-    	if (!this.facesContext.getExternalContext().isUserInRole("ADMINISTRADOR")) {
-    		try {
-				this.facesContext.getExternalContext().redirect("login-error.xhtml");
-			} catch (IOException e) {e.printStackTrace();}
-    	}
+		/*
+		 * if (!this.facesContext.getExternalContext().isUserInRole("ADMINISTRADOR")) {
+		 * try { this.facesContext.getExternalContext().redirect("login-error.xhtml"); }
+		 * catch (IOException e) {e.printStackTrace();} }
+		 */
     	//Inicializa elementos importantes
     	this.permissoesSelecionadas = new ArrayList<Integer>();
     	this.listaUsuarios = usuarioDAO.listAll();

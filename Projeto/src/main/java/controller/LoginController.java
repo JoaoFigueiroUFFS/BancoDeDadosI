@@ -8,16 +8,10 @@ import javax.faces.application.FacesMessage;
 import javax.faces.context.FacesContext;
 import javax.inject.Inject;
 import javax.inject.Named;
-import javax.security.enterprise.AuthenticationStatus;
-import javax.security.enterprise.SecurityContext;
-import javax.security.enterprise.authentication.mechanism.http.AuthenticationParameters;
-import javax.security.enterprise.credential.Credential;
-import javax.security.enterprise.credential.Password;
-import javax.security.enterprise.credential.UsernamePasswordCredential;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
+import javax.security.enterprise.identitystore.Pbkdf2PasswordHash;
 
 import model.Usuario;
+import dao.UsuarioDAO;
 
 //Controlador da página de Login
 @Named
@@ -25,12 +19,15 @@ import model.Usuario;
 public class LoginController {
 
 	@Inject
-	private FacesContext facesContext;
+	transient private Pbkdf2PasswordHash passwordHash;
 
 	@Inject
-	private SecurityContext securityContext;
+	private FacesContext facesContext;
 
 	private Usuario usuario;
+
+	@Inject
+	private UsuarioDAO usuario_banco;
 
 	@PostConstruct
 	public void inicializarUsuario() {
@@ -38,23 +35,17 @@ public class LoginController {
 	}
 
 	public void login() throws IOException {
+
 		if (facesContext.getExternalContext().getAuthType() != null) {
 			facesContext.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR,
 					"Existe um usuário autenticado! Use a opção logout primeiro.", ""));
+		} else if (usuario.getUsuario() == usuario_banco.findByName(usuario.getUsuario()).getUsuario()
+				&& this.passwordHash.verify(usuario.getSenha().toCharArray(), usuario_banco.findByName(usuario.getUsuario()).getSenha())) { 
+			facesContext.getExternalContext().redirect("cadastro_usuario.xhtml");
 		} else {
-			Credential credential = new UsernamePasswordCredential(usuario.getUsuario(),
-					new Password(usuario.getSenha()));
-			AuthenticationStatus status = securityContext.authenticate(
-					(HttpServletRequest) facesContext.getExternalContext().getRequest(),
-					(HttpServletResponse) facesContext.getExternalContext().getResponse(),
-					AuthenticationParameters.withParams().credential(credential));
-			if (status.equals(AuthenticationStatus.SUCCESS))
-				facesContext.getExternalContext().redirect("cadastro_usuario.xhtml");
-			else if (status.equals(AuthenticationStatus.SEND_FAILURE)) {
-				usuario = new Usuario();
-				facesContext.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Login Inválido!",
-						"Usuário ou senha incorretos."));
-			}
+			usuario = new Usuario();
+			facesContext.addMessage(null,
+					new FacesMessage(FacesMessage.SEVERITY_ERROR, "Login Inválido!", "Usuário ou senha incorretos."));
 		}
 	}
 

@@ -1,0 +1,166 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!-- Define bibliotecas(tags) usadas na página -->
+<!-- Pode se usar elementos HTML padrão misturados com os JSF e Primefaces sem problemas -->
+<!-- As tags ui, h e f são do JSF -->
+<!-- ui são para elementos de organização (templates) e automatização (laços e condicionais) -->
+<!-- h são reimplementações de elementos HTML padrão que fornecem algumas funções/facilidades adicionais -->
+<!-- f são para comunicação/transmição de parâmetros entre páginas e para controle de requisições AJAX -->
+<!-- A tag p são do Primefaces, ela reimplementa as tags h com ainda mais funcionalidades e fornece tags adicionais com recursos avançados de Javascript e CSS embutidos -->
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:p="http://primefaces.org/ui"
+	template="/WEB-INF/templates/default.xhtml">
+
+	<!-- Usado para definir uso do Template -->
+	<!-- O template só serve para uma melhor organização do código e para evitar a repetição de código -->
+	<ui:define name="content">
+
+		<!-- Define formulário para Dialogs (elementos estilo Pop-up) -->
+		<!-- Lembre-se que o uso de formulários só não é necessário para elementos que são estáticos (sem ação, animação, conteúdo dinâmico) -->
+		<h:form id="dialogs">
+			<p:growl id="messages" />
+			<p:dialog header="Nova Venda" showEffect="fade" modal="true"
+				widgetVar="vendaDialog" responsive="true">
+				<p:outputPanel id="venda-conteudo-dialog" class="ui-fluid">
+					<p:outputPanel
+						rendered="#{not empty cadastroVendaController.venda}">
+						<div class="field">
+							<p:outputLabel for="venda">Nota</p:outputLabel>
+							<p:inputText id="venda"
+								value="#{cadastroVendaController.venda.idNota}" required="true" />
+						</div>
+						<div class="field">
+							<p:outputLabel for="dtVenda">Data Venda</p:outputLabel>
+							<p:inputText id="dtVenda"
+								value="#{cadastroVendaController.venda.dtVenda}" required="true" />
+						</div>
+						<div class="field">
+							<p:outputLabel for="vlTotal">Valor Total</p:outputLabel>
+							<p:inputText id="vlTotal"
+								value="#{cadastroVendaController.venda.vlTotal}" required="true" />
+						</div>
+						<div class="field">
+							<p:outputLabel for="cliente">Cliente</p:outputLabel>
+							<p:selectOneMenu id="cliente"
+								value="#{cadastroVendaController.venda.cdCliente}"
+								required="true" converter="ClienteConverter">
+								<f:selectItem itemLabel="Selecione" itemValue="" />
+								<f:selectItems
+									value="#{cadastroClienteController.listaClientes}"
+									var="cliente" itemLabel="#{cliente.nomeCliente}"
+									itemValue="#{cliente}" />
+							</p:selectOneMenu>
+						</div>
+						<div class="field">
+							<p:outputLabel for="cidade_rota">Cidade Rota</p:outputLabel>
+							<p:selectOneMenu id="cidade_rota"
+								value="#{cadastroVendaController.venda.cidadesRota}"
+								required="true" converter="CidadesRotaConverter">
+								<f:selectItem itemLabel="Selecione" itemValue="" />
+								<f:selectItems
+									value="#{cadastroCidadesRotaController.listaCidadesRotas}"
+									var="cidade_rota"
+									itemLabel="#{cidade_rota.rota.nmRota.concat(' - ').concat(cidade_rota.cidade.nomeCidade).concat(' - ').concat(cidade_rota.cidade.estado.sgUf)}"
+									itemValue="#{cidade_rota}" />
+							</p:selectOneMenu>
+						</div>
+					</p:outputPanel>
+				</p:outputPanel>
+
+				<f:facet name="footer">
+					<p:commandButton value="Salvar" icon="pi pi-check"
+						actionListener="#{cadastroVendaController.salvar}"
+						update="venda-conteudo-dialog dialogs:messages"
+						process="venda-conteudo-dialog @this" />
+					<p:commandButton value="Cancelar" icon="pi pi-times"
+						onclick="PF('vendaDialog').hide()" class="ui-button-secondary"
+						type="button" />
+				</f:facet>
+			</p:dialog>
+
+			<p:confirmDialog widgetVar="removerVendaDialog" showEffect="fade"
+				width="300" message="Desejar remover esta venda?" header="Confirm"
+				severity="warn">
+				<p:commandButton value="Sim" icon="pi pi-check"
+					actionListener="#{cadastroVendaController.remover}" process="@this"
+					oncomplete="PF('removerVendaDialog').hide()" />
+				<p:commandButton value="Não" type="button"
+					styleClass="ui-button-secondary" icon="pi pi-times"
+					onclick="PF('removerVendaDialog').hide()" />
+			</p:confirmDialog>
+
+		</h:form>
+
+		<!-- Define formulário principal -->
+		<h:form id="form">
+			<p:growl id="messages" showDetail="true" />
+
+			<p:toolbar>
+				<p:toolbarGroup>
+					<p:commandButton value="Nova Venda" icon="pi pi-plus"
+						actionListener="#{cadastroVendaController.novaVenda}"
+						update=":dialogs:venda-conteudo-dialog"
+						oncomplete="PF('vendaDialog').show()"
+						styleClass="ui-button-raised" style="margin-right: .5rem">
+						<p:resetInput target=":dialogs:venda-conteudo-dialog" />
+					</p:commandButton>
+				</p:toolbarGroup>
+			</p:toolbar>
+
+			<p:dataTable id="dt-venda" widgetVar="dtVendas" var="rt"
+				value="#{cadastroVendaController.listaVendas}">
+				<f:facet name="header">
+					<div>
+						<span style="font-weight: bold">Vendas</span>
+					</div>
+				</f:facet>
+
+				<p:column headerText="Nrº Nota">
+					<h:outputText value="#{rt.idNota}" />
+				</p:column>
+				<p:column filterBy="#{rt.dtVenda}" headerText="Data Nota">
+					<h:outputText value="#{rt.dtVenda}" />
+				</p:column>
+				<p:column filterBy="#{rt.vlTotal}" headerText="Valor Total"
+					sortBy="#{rt.vlTotal}">
+					<h:outputText value="#{rt.vlTotal}" />
+				</p:column>
+				<p:column filterBy="#{rt.cliente.nomeCliente}" headerText="Cliente"
+					sortBy="#{rt.cdCliente.nomeCliente}">
+					<h:outputText value="#{rt.cdCliente.nomeCliente}" />
+				</p:column>
+				<p:column filterBy="#{rt.venda.cidadesRota.cidade.nomeCidade}" headerText="Cidade Rota"
+					sortBy="#{rt.venda.cidadesRota.cidade.nomeCidade}">
+					<h:outputText value="#{rt.cidadesRota.cidade.nomeCidade}" />
+				</p:column>
+				<p:column filterBy="#{rt.venda.cidadesRota.cidade.estado.sgUf}" headerText="Estado Rota"
+					sortBy="#{rt.venda.cidadesRota.cidade.estado.sgUf}">
+					<h:outputText value="#{rt.cidadesRota.cidade.estado.sgUf}" />
+				</p:column>
+				<p:column>
+					<p:commandButton icon="pi pi-pencil"
+						update=":dialogs:venda-conteudo-dialog"
+						oncomplete="PF('vendaDialog').show()"
+						action="#{cadastroVendaController.salvar}"
+						styleClass="edit-button rounded-button ui-button-outlined"
+						process="@this">
+						<f:setPropertyActionListener value="#{rt}"
+							target="#{cadastroVendaController.venda}" />
+						<p:resetInput target=":dialogs:venda-conteudo-dialog" />
+					</p:commandButton>
+					<p:commandButton class="ui-button-raised rounded-button"
+						icon="pi pi-trash" process="@this"
+						oncomplete="PF('removerVendaDialog').show()">
+						<f:setPropertyActionListener value="#{rt}"
+							target="#{cadastroVendaController.venda}" />
+					</p:commandButton>
+				</p:column>
+
+			</p:dataTable>
+		</h:form>
+
+	</ui:define>
+</ui:composition>

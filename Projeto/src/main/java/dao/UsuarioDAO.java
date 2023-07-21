@@ -61,12 +61,13 @@ public class UsuarioDAO implements Serializable{
     	ResultSet rs = null;
     	try {
 			con = this.ds.getConnection();
-			ps = con.prepareStatement("SELECT id_usuario, email FROM usuario WHERE usuario = ?");
+			ps = con.prepareStatement("SELECT id_usuario, email, senha FROM usuario WHERE usuario = ?");
 			ps.setString(1, name);
 			rs = ps.executeQuery();
 			if (rs.next()) {
 				u.setId(rs.getInt("id_usuario"));
 				u.setEmail(rs.getString("email"));
+				u.setSenha(rs.getString("senha"));
 				u.setUsuario(name);
 				u.setPermissoes(listPermissoesUsuario(u));
 			}

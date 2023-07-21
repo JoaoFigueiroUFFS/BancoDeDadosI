@@ -71,7 +71,7 @@
 	            <p:toolbarGroup>
 	                <p:commandButton value="Novo" icon="pi pi-plus" actionListener="#{cadastroUsuarioController.novoCadastro}"
 	                    update=":dialogs:usuario-conteudo-dialog" oncomplete="PF('usuarioDialog').show()"
-	                    styleClass="ui-button-success" style="margin-right: .5rem">
+	                    styleClass="ui-button-raised" style="margin-right: .5rem">
 	                    <p:resetInput target=":dialogs:usuario-conteudo-dialog" />
 	                </p:commandButton>
 	            </p:toolbarGroup>
@@ -100,11 +100,11 @@
 	            	<!-- PF é usado para chamada de função Javascript de algum elemento do Primefaces -->
 	                <p:commandButton icon="pi pi-pencil" update=":dialogs:usuario-conteudo-dialog" 
 	                    oncomplete="PF('usuarioDialog').show()" action="#{cadastroUsuarioController.alterar}"
-	                    styleClass="edit-button rounded-button ui-button-success" process="@this">
+	                    styleClass="edit-button rounded-button ui-button-outlined" process="@this">
 	                    <f:setPropertyActionListener value="#{us}" target="#{cadastroUsuarioController.usuario}" />
 	                    <p:resetInput target=":dialogs:usuario-conteudo-dialog" />
 	                </p:commandButton>
-	                <p:commandButton class="ui-button-warning rounded-button" icon="pi pi-trash"
+	                <p:commandButton class="ui-button-raised rounded-button" icon="pi pi-trash" 
 	                                 process="@this" oncomplete="PF('removerUsuarioDialog').show()">
 	                    <f:setPropertyActionListener value="#{us}" target="#{cadastroUsuarioController.usuario}" />
 	                </p:commandButton>
